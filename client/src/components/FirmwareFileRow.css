@@ -1,0 +1,63 @@
+.firmware-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.firmware-row-address {
+  width: 96px;
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.firmware-row-file {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 200px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  cursor: pointer;
+  background: var(--bg);
+}
+
+.firmware-row-file input[type="file"] {
+  display: none;
+}
+
+.firmware-row-filename {
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.firmware-row-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.firmware-row-remove:hover {
+  color: #e5484d;
+  border-color: #e5484d;
+}
+
+.firmware-row-progress {
+  flex-basis: 100%;
+}
