@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Card, ClipboardButton, Disclosure } from '@gravity-ui/uikit';
 
 interface ArduinoOtaSnippetProps {
   defaultFieldName: string;
@@ -68,35 +68,36 @@ void loop() {
 }
 
 export function ArduinoOtaSnippet({ defaultFieldName }: ArduinoOtaSnippetProps) {
-  const [copied, setCopied] = useState(false);
-  const sketch = buildSketch(defaultFieldName || "firmware");
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(sketch);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
+  const sketch = buildSketch(defaultFieldName || 'firmware');
 
   return (
-    <details className="card advanced">
-      <summary>Требования к прошивке устройства и пример скетча для Arduino IDE</summary>
-      <p className="hint">
-        Загрузка по Wi-Fi выполняется прямым HTTP-запросом из браузера на устройство. Это значит, что устройство
-        должно само принимать .bin файл через HTTP POST на указанный путь, а если страница приложения открыта с
-        другого адреса (другого «origin»), устройство также должно отвечать заголовками CORS — иначе браузер не
-        сможет прочитать ответ устройства, даже если сама прошивка прошла успешно. Готовые библиотеки вроде
-        стандартного <code>HTTPUpdateServer</code> в новых версиях ядра arduino-esp32 блокируют запросы с чужого
-        origin из соображений безопасности. Ниже — минимальный пример скетча, который принимает прошивку с любого
-        origin и совместим с этим приложением.
-      </p>
-      <div className="snippet">
-        <button type="button" className="btn snippet-copy" onClick={handleCopy}>
-          {copied ? "Скопировано!" : "Скопировать"}
-        </button>
-        <pre>
-          <code>{sketch}</code>
-        </pre>
-      </div>
-    </details>
+    <Card type="container" view="raised" size="l" className="card">
+      <Disclosure summary="Требования к прошивке устройства и пример скетча для Arduino IDE">
+        <p className="hint">
+          Загрузка по Wi-Fi выполняется прямым HTTP-запросом из браузера на устройство. Это значит, что устройство
+          должно само принимать .bin файл через HTTP POST на указанный путь, а если страница приложения открыта с
+          другого адреса (другого «origin»), устройство также должно отвечать заголовками CORS — иначе браузер не
+          сможет прочитать ответ устройства, даже если сама прошивка прошла успешно. Готовые библиотеки вроде
+          стандартного <code>HTTPUpdateServer</code> в новых версиях ядра arduino-esp32 блокируют запросы с чужого
+          origin из соображений безопасности. Ниже — минимальный пример скетча, который принимает прошивку с любого
+          origin и совместим с этим приложением.
+        </p>
+        <div className="snippet">
+          <ClipboardButton
+            text={sketch}
+            view="outlined"
+            size="s"
+            className="snippet-copy"
+            tooltipInitialText="Скопировать"
+            tooltipSuccessText="Скопировано!"
+          >
+            Скопировать
+          </ClipboardButton>
+          <pre>
+            <code>{sketch}</code>
+          </pre>
+        </div>
+      </Disclosure>
+    </Card>
   );
 }
