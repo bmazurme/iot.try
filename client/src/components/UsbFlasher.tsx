@@ -1,13 +1,14 @@
-import { useRef, useState } from "react";
-import type { FlashFreqValues, FlashModeValues, FlashSizeValues } from "esptool-js";
-import { isWebSerialSupported, useUsbFlasher } from "../hooks/useUsbFlasher";
-import { useTerminalLog } from "../hooks/useTerminalLog";
-import { Console } from "./Console";
-import { ProgressBar } from "./ProgressBar";
-import { FirmwareFileRow } from "./FirmwareFileRow";
-import { parseAddress } from "../utils/hex";
-import type { FirmwareSlot } from "../types";
-import type { FlashFileInput } from "../hooks/useUsbFlasher";
+import { useRef, useState } from 'react';
+import type { FlashFreqValues, FlashModeValues, FlashSizeValues } from 'esptool-js';
+import { Plus, ThunderboltFill, TrashBin } from '@gravity-ui/icons';
+import { Alert, Button, Card, Checkbox, Disclosure, Icon, Label, Progress, Select } from '@gravity-ui/uikit';
+import { isWebSerialSupported, useUsbFlasher } from '../hooks/useUsbFlasher';
+import { useTerminalLog } from '../hooks/useTerminalLog';
+import { Console } from './Console';
+import { FirmwareFileRow } from './FirmwareFileRow';
+import { parseAddress } from '../utils/hex';
+import type { FirmwareSlot } from '../types';
+import type { FlashFileInput } from '../hooks/useUsbFlasher';
 
 const BAUD_RATES = [115200, 230400, 460800, 921600];
 
@@ -19,16 +20,16 @@ export function UsbFlasher() {
   const { status, chipName, progress, connect, disconnect, flash, eraseFlash } = useUsbFlasher(terminal);
 
   const [baudrate, setBaudrate] = useState(115200);
-  const [slots, setSlots] = useState<FirmwareSlot[]>([createSlot("0x10000")]);
+  const [slots, setSlots] = useState<FirmwareSlot[]>([createSlot('0x10000')]);
   const [eraseAll, setEraseAll] = useState(false);
   const [compress, setCompress] = useState(true);
-  const [flashMode, setFlashMode] = useState<FlashModeValues>("keep");
-  const [flashFreq, setFlashFreq] = useState<FlashFreqValues>("keep");
-  const [flashSize, setFlashSize] = useState<FlashSizeValues>("keep");
+  const [flashMode, setFlashMode] = useState<FlashModeValues>('keep');
+  const [flashFreq, setFlashFreq] = useState<FlashFreqValues>('keep');
+  const [flashSize, setFlashSize] = useState<FlashSizeValues>('keep');
   const formRef = useRef<HTMLDivElement>(null);
 
-  const connected = status === "connected" || status === "busy";
-  const busy = status === "busy" || status === "connecting";
+  const connected = status === 'connected' || status === 'busy';
+  const busy = status === 'busy' || status === 'connecting';
 
   const updateSlot = (id: number, next: FirmwareSlot) => {
     setSlots((prev) => prev.map((s) => (s.id === id ? next : s)));
@@ -50,73 +51,90 @@ export function UsbFlasher() {
       if (!slot.file) continue;
       const address = parseAddress(slot.address);
       if (address === null) {
-        append(`Некорректный адрес «${slot.address}» для файла ${slot.file.name}`, "error");
+        append(`Некорректный адрес «${slot.address}» для файла ${slot.file.name}`, 'error');
         return;
       }
       const buffer = await slot.file.arrayBuffer();
       inputs.push({ name: slot.file.name, address, data: new Uint8Array(buffer) });
     }
     if (inputs.length === 0) {
-      append("Выберите хотя бы один .bin файл для прошивки", "error");
+      append('Выберите хотя бы один .bin файл для прошивки', 'error');
       return;
     }
     const ok = await flash(inputs, { eraseAll, compress, flashMode, flashFreq, flashSize });
-    if (ok) append("Прошивка успешно записана!", "success");
+    if (ok) append('Прошивка успешно записана!', 'success');
   };
 
   const handleEraseFlash = async () => {
-    if (!window.confirm("Полностью очистить flash-память устройства? Это удалит всю прошивку и данные.")) return;
+    if (!window.confirm('Полностью очистить flash-память устройства? Это удалит всю прошивку и данные.')) return;
     const ok = await eraseFlash();
-    if (ok) append("Flash-память полностью очищена.", "success");
+    if (ok) append('Flash-память полностью очищена.', 'success');
   };
 
-  const canFlash = connected && status !== "busy" && slots.some((s) => s.file);
+  const canFlash = connected && status !== 'busy' && slots.some((s) => s.file);
 
   const overallPercent = progress ? ((progress.fileIndex + progress.written / progress.total) / progress.fileCount) * 100 : 0;
 
   if (!isWebSerialSupported) {
     return (
       <div className="panel">
-        <div className="warning-box">
-          Web Serial API не поддерживается в этом браузере. Откройте приложение в Chrome, Edge или другом браузере на
-          основе Chromium (версия 89+) по HTTPS или на localhost.
-        </div>
+        <Alert
+          theme="warning"
+          title="Web Serial API не поддерживается"
+          message="Откройте приложение в Chrome, Edge или другом браузере на основе Chromium (версия 89+) по HTTPS или на localhost."
+        />
       </div>
     );
   }
 
   return (
     <div className="panel" ref={formRef}>
-      <section className="card">
-        <h3>Подключение</h3>
-        <div className="row">
-          <label className="field">
-            <span>Скорость (baud)</span>
-            <select value={baudrate} disabled={connected} onChange={(e) => setBaudrate(Number(e.target.value))}>
-              {BAUD_RATES.map((rate) => (
-                <option key={rate} value={rate}>
-                  {rate}
-                </option>
-              ))}
-            </select>
-          </label>
-          {!connected ? (
-            <button type="button" className="btn btn-primary" disabled={busy} onClick={handleConnect}>
-              {status === "connecting" ? "Подключение…" : "Подключить устройство"}
-            </button>
-          ) : (
-            <button type="button" className="btn" disabled={status === "busy"} onClick={disconnect}>
-              Отключить
-            </button>
-          )}
-          <span className={`status-badge status-${connected ? "ok" : "off"}`}>
-            {connected ? `Подключено${chipName ? `: ${chipName}` : ""}` : "Не подключено"}
-          </span>
+      <Card type="container" view="raised" size="l" className="card">
+        <div className="section-head">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="6" stroke="var(--g-color-text-brand)" strokeWidth="1.5" />
+            <path d="M4.5 7h5M7 4.5v5" stroke="var(--g-color-text-brand)" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <span>Подключение</span>
         </div>
-      </section>
+        <div className="row">
+          <div className="field">
+            <span>Скорость (baud)</span>
+            <Select
+              value={[String(baudrate)]}
+              disabled={connected}
+              onUpdate={(value) => setBaudrate(Number(value[0]))}
+              options={BAUD_RATES.map((rate) => ({ value: String(rate), content: String(rate) }))}
+            />
+          </div>
+          {!connected ? (
+            <Button view="action" size="m" loading={status === 'connecting'} disabled={busy} onClick={handleConnect}>
+              {status === 'connecting' ? 'Подключение…' : 'Подключить устройство'}
+            </Button>
+          ) : (
+            <Button view="outlined" size="m" disabled={status === 'busy'} onClick={disconnect}>
+              Отключить
+            </Button>
+          )}
+          <Label
+            className="status-label"
+            theme={connected ? 'success' : 'normal'}
+            icon={<span className={`status-dot${connected ? ' status-dot-active' : ''}`} />}
+          >
+            {connected ? `Подключено${chipName ? `: ${chipName}` : ''}` : 'Не подключено'}
+          </Label>
+        </div>
+      </Card>
 
-      <section className="card">
-        <h3>Файлы прошивки</h3>
+      <Card type="container" view="raised" size="l" className="card">
+        <div className="section-head">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <rect x="2" y="1.5" width="7" height="11" rx="1.5" stroke="var(--g-color-text-brand)" strokeWidth="1.4" />
+            <path d="M5 1.5v3l2-1 2 1V1.5" stroke="var(--g-color-text-brand)" strokeWidth="1.2" />
+            <path d="M4 7.5h6M4 9.5h4" stroke="var(--g-color-text-brand)" strokeWidth="1.2" strokeLinecap="round" />
+          </svg>
+          <span>Файлы прошивки</span>
+        </div>
         <div className="firmware-list">
           {slots.map((slot, index) => (
             <FirmwareFileRow
@@ -124,7 +142,7 @@ export function UsbFlasher() {
               slot={slot}
               disabled={busy}
               progressPercent={
-                status === "busy" && progress && progress.fileIndex === index ? (progress.written / progress.total) * 100 : undefined
+                status === 'busy' && progress && progress.fileIndex === index ? (progress.written / progress.total) * 100 : undefined
               }
               onChange={(next) => updateSlot(slot.id, next)}
               onRemove={() => removeSlot(slot.id)}
@@ -132,87 +150,116 @@ export function UsbFlasher() {
           ))}
         </div>
         <div className="row preset-row">
-          <button type="button" className="btn btn-ghost" disabled={busy} onClick={() => addSlot("0x1000")}>
-            + Bootloader (0x1000)
-          </button>
-          <button type="button" className="btn btn-ghost" disabled={busy} onClick={() => addSlot("0x8000")}>
-            + Таблица разделов (0x8000)
-          </button>
-          <button type="button" className="btn btn-ghost" disabled={busy} onClick={() => addSlot("0x10000")}>
-            + Приложение (0x10000)
-          </button>
-          <button type="button" className="btn btn-ghost" disabled={busy} onClick={() => addSlot("")}>
-            + Произвольный файл
-          </button>
+          <Button view="outlined" size="xs" disabled={busy} onClick={() => addSlot('0x1000')}>
+            <Icon data={Plus} size={12} /> Bootloader (0x1000)
+          </Button>
+          <Button view="outlined" size="xs" disabled={busy} onClick={() => addSlot('0x8000')}>
+            <Icon data={Plus} size={12} /> Таблица разделов (0x8000)
+          </Button>
+          <Button view="outlined" size="xs" disabled={busy} onClick={() => addSlot('0x10000')}>
+            <Icon data={Plus} size={12} /> Приложение (0x10000)
+          </Button>
+          <Button view="outlined" size="xs" disabled={busy} onClick={() => addSlot('')}>
+            <Icon data={Plus} size={12} /> Произвольный файл
+          </Button>
         </div>
         <p className="hint">
-          На чипах ESP32-S2/S3/C2/C3/C6/H2/P4 загрузчик (bootloader) обычно располагается по адресу 0x0, а не 0x1000 —
-          уточните адрес в документации вашей прошивки.
+          На чипах ESP32-S2/S3/C2/C3/C6/H2/P4 загрузчик (bootloader) обычно располагается по адресу <code>0x0</code>, а
+          не <code>0x1000</code> — уточните адрес в документации вашей прошивки.
         </p>
-      </section>
+      </Card>
 
-      <section className="card">
-        <h3>Параметры записи</h3>
-        <label className="checkbox">
-          <input type="checkbox" checked={eraseAll} disabled={busy} onChange={(e) => setEraseAll(e.target.checked)} />
-          Полностью очистить flash перед записью
-        </label>
-        <details className="advanced">
-          <summary>Дополнительные параметры</summary>
-          <div className="row">
-            <label className="checkbox">
-              <input type="checkbox" checked={compress} disabled={busy} onChange={(e) => setCompress(e.target.checked)} />
-              Сжатие данных при передаче
-            </label>
-          </div>
-          <div className="row">
-            <label className="field">
-              <span>Flash mode</span>
-              <select value={flashMode} disabled={busy} onChange={(e) => setFlashMode(e.target.value as FlashModeValues)}>
-                <option value="keep">keep (из файла)</option>
-                <option value="dio">dio</option>
-                <option value="qio">qio</option>
-                <option value="dout">dout</option>
-                <option value="qout">qout</option>
-              </select>
-            </label>
-            <label className="field">
-              <span>Flash frequency</span>
-              <select value={flashFreq} disabled={busy} onChange={(e) => setFlashFreq(e.target.value as FlashFreqValues)}>
-                <option value="keep">keep (из файла)</option>
-                <option value="40m">40 МГц</option>
-                <option value="80m">80 МГц</option>
-              </select>
-            </label>
-            <label className="field">
-              <span>Flash size</span>
-              <select value={flashSize} disabled={busy} onChange={(e) => setFlashSize(e.target.value as FlashSizeValues)}>
-                <option value="keep">keep (из файла)</option>
-                <option value="detect">detect (определить)</option>
-                <option value="1MB">1MB</option>
-                <option value="2MB">2MB</option>
-                <option value="4MB">4MB</option>
-                <option value="8MB">8MB</option>
-                <option value="16MB">16MB</option>
-              </select>
-            </label>
-          </div>
-        </details>
-      </section>
-
-      <section className="card">
-        <div className="row">
-          <button type="button" className="btn btn-primary" disabled={!canFlash} onClick={handleFlash}>
-            {status === "busy" ? "Прошивка…" : "Прошить"}
-          </button>
-          <button type="button" className="btn btn-danger" disabled={!connected || status === "busy"} onClick={handleEraseFlash}>
-            Полная очистка Flash
-          </button>
+      <Card type="container" view="raised" size="l" className="card">
+        <div className="section-head">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1.5v2M7 10.5v2M1.5 7h2M10.5 7h2" stroke="var(--g-color-text-brand)" strokeWidth="1.4" strokeLinecap="round" />
+            <circle cx="7" cy="7" r="3" stroke="var(--g-color-text-brand)" strokeWidth="1.4" />
+            <circle cx="7" cy="7" r="1.2" fill="var(--g-color-text-brand)" />
+          </svg>
+          <span>Параметры записи</span>
         </div>
-        {status === "busy" && progress && (
-          <ProgressBar label={`Файл ${progress.fileIndex + 1}/${progress.fileCount}: ${progress.fileName}`} percent={overallPercent} />
+        <Checkbox size="m" checked={eraseAll} disabled={busy} onUpdate={setEraseAll}>
+          Полностью очистить flash перед записью
+        </Checkbox>
+        <Disclosure summary="Дополнительные параметры" className="advanced">
+          <div className="row">
+            <Checkbox size="m" checked={compress} disabled={busy} onUpdate={setCompress}>
+              Сжатие данных при передаче
+            </Checkbox>
+          </div>
+          <div className="row">
+            <div className="field">
+              <span>Flash mode</span>
+              <Select
+                value={[flashMode]}
+                disabled={busy}
+                onUpdate={(value) => setFlashMode(value[0] as FlashModeValues)}
+                options={[
+                  { value: 'keep', content: 'keep (из файла)' },
+                  { value: 'dio', content: 'dio' },
+                  { value: 'qio', content: 'qio' },
+                  { value: 'dout', content: 'dout' },
+                  { value: 'qout', content: 'qout' },
+                ]}
+              />
+            </div>
+            <div className="field">
+              <span>Flash frequency</span>
+              <Select
+                value={[flashFreq]}
+                disabled={busy}
+                onUpdate={(value) => setFlashFreq(value[0] as FlashFreqValues)}
+                options={[
+                  { value: 'keep', content: 'keep (из файла)' },
+                  { value: '40m', content: '40 МГц' },
+                  { value: '80m', content: '80 МГц' },
+                ]}
+              />
+            </div>
+            <div className="field">
+              <span>Flash size</span>
+              <Select
+                value={[flashSize]}
+                disabled={busy}
+                onUpdate={(value) => setFlashSize(value[0] as FlashSizeValues)}
+                options={[
+                  { value: 'keep', content: 'keep (из файла)' },
+                  { value: 'detect', content: 'detect (определить)' },
+                  { value: '1MB', content: '1MB' },
+                  { value: '2MB', content: '2MB' },
+                  { value: '4MB', content: '4MB' },
+                  { value: '8MB', content: '8MB' },
+                  { value: '16MB', content: '16MB' },
+                ]}
+              />
+            </div>
+          </div>
+        </Disclosure>
+      </Card>
+
+      <Card type="container" view="raised" size="l" className="card">
+        <div className="row">
+          <Button view="action" size="m" disabled={!canFlash} onClick={handleFlash}>
+            <Icon data={ThunderboltFill} size={14} />
+            {status === 'busy' ? 'Прошивка…' : 'Прошить'}
+          </Button>
+          <Button view="outlined-danger" size="m" disabled={!connected || status === 'busy'} onClick={handleEraseFlash}>
+            <Icon data={TrashBin} size={14} />
+            Полная очистка Flash
+          </Button>
+        </div>
+        {status === 'busy' && progress && (
+          <div className="action-progress">
+            <div className="progress-head">
+              <span className="progress-label">
+                Файл {progress.fileIndex + 1}/{progress.fileCount}: {progress.fileName}
+              </span>
+              <span className="progress-percent">{Math.round(overallPercent)}%</span>
+            </div>
+            <Progress value={overallPercent} size="s" theme="default" />
+          </div>
         )}
-      </section>
+      </Card>
 
       <Console lines={lines} pending={pending} onClear={clean} />
     </div>
