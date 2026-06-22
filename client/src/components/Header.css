@@ -1,6 +1,6 @@
 .app-header {
-  background: var(--card-bg);
-  border-bottom: 1px solid var(--border);
+  background: var(--g-color-base-float);
+  border-bottom: 1px solid var(--g-color-line-generic);
   padding: 0 24px;
 }
 
@@ -16,14 +16,14 @@
 .app-title {
   font-size: 15px;
   font-weight: 650;
-  color: var(--text-h);
+  color: var(--g-color-text-primary);
   letter-spacing: -0.2px;
   line-height: 1.2;
 }
 
 .app-subtitle {
   font-size: 12px;
-  color: var(--text);
+  color: var(--g-color-text-secondary);
   line-height: 1;
 }
 
@@ -31,43 +31,11 @@
   flex: 1;
 }
 
-.badge {
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-
 .badge-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--success);
+  background: var(--g-color-text-positive);
   display: inline-block;
   animation: pulse-dot 2s ease-in-out infinite;
-}
-
-.theme-toggle {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.15s;
-}
-
-.theme-toggle:hover {
-  border-color: var(--accent-border);
-  color: var(--text-h);
 }
