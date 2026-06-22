@@ -1,10 +1,7 @@
 .console {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .console-bar {
@@ -12,8 +9,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 9px 14px;
-  border-bottom: 1px solid var(--border);
-  background: var(--card-bg);
+  border-bottom: 1px solid var(--g-color-line-generic);
 }
 
 .console-bar-label {
@@ -27,23 +23,7 @@
   font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: var(--text);
-}
-
-.console-clear {
-  font-size: 11.5px;
-  padding: 3px 9px;
-  border-radius: 5px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.console-clear:hover {
-  border-color: var(--accent-border);
-  color: var(--text-h);
+  color: var(--g-color-text-secondary);
 }
 
 .console-body {
@@ -56,12 +36,12 @@
   font-family: var(--mono);
   font-size: 12.5px;
   line-height: 1.65;
-  color: var(--code-text);
-  background: var(--code-bg);
+  color: #d4d6e0;
+  background: #18181f;
 }
 
 .console-placeholder {
-  color: var(--text);
+  color: #9ca3af;
   opacity: 0.5;
   font-style: italic;
 }
@@ -69,15 +49,15 @@
 .console-line {
   white-space: pre-wrap;
   word-break: break-word;
-  color: var(--code-text);
+  color: inherit;
 }
 
 .console-error {
-  color: var(--danger);
+  color: #f87171;
 }
 
 .console-success {
-  color: var(--success);
+  color: #4ade80;
 }
 
 .console-pending {

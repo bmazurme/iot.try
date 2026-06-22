@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Button, Card } from '@gravity-ui/uikit';
 import type { LogLine } from '../types';
 import './Console.css';
 
@@ -17,19 +18,25 @@ export function Console({ lines, pending, onClear }: ConsoleProps) {
   }, [lines, pending]);
 
   return (
-    <div className="console">
+    <Card type="container" view="raised" size="l" className="console">
       <div className="console-bar">
         <div className="console-bar-label">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M2 3.5L5 6l-3 2.5" stroke="var(--text)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M6.5 8.5h3" stroke="var(--text)" strokeWidth="1.3" strokeLinecap="round" />
+            <path
+              d="M2 3.5L5 6l-3 2.5"
+              stroke="var(--g-color-text-secondary)"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path d="M6.5 8.5h3" stroke="var(--g-color-text-secondary)" strokeWidth="1.3" strokeLinecap="round" />
           </svg>
           <span className="console-title">Журнал</span>
         </div>
         {onClear && (
-          <button type="button" className="console-clear" onClick={onClear}>
+          <Button view="flat" size="xs" onClick={onClear}>
             Очистить
-          </button>
+          </Button>
         )}
       </div>
       <div className="console-body" ref={scrollRef}>
@@ -41,6 +48,6 @@ export function Console({ lines, pending, onClear }: ConsoleProps) {
         ))}
         {pending && <div className="console-line console-pending">{pending}</div>}
       </div>
-    </div>
+    </Card>
   );
 }
