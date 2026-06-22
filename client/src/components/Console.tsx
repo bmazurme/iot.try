@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
-import type { LogLine } from "../types";
-import "./Console.css";
+import { useEffect, useRef } from 'react';
+import type { LogLine } from '../types';
+import './Console.css';
 
 interface ConsoleProps {
   lines: LogLine[];
@@ -19,7 +19,13 @@ export function Console({ lines, pending, onClear }: ConsoleProps) {
   return (
     <div className="console">
       <div className="console-bar">
-        <span className="console-title">Журнал</span>
+        <div className="console-bar-label">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 3.5L5 6l-3 2.5" stroke="var(--text)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M6.5 8.5h3" stroke="var(--text)" strokeWidth="1.3" strokeLinecap="round" />
+          </svg>
+          <span className="console-title">Журнал</span>
+        </div>
         {onClear && (
           <button type="button" className="console-clear" onClick={onClear}>
             Очистить
