@@ -1,9 +1,9 @@
-import { useCallback, useRef, useState } from "react";
-import { ESPLoader, Transport } from "esptool-js";
-import type { FlashFreqValues, FlashModeValues, FlashOptions, FlashSizeValues, IEspLoaderTerminal } from "esptool-js";
-import type { FlashProgress } from "../types";
+import { useCallback, useRef, useState } from 'react';
+import { ESPLoader, Transport } from 'esptool-js';
+import type { FlashFreqValues, FlashModeValues, FlashOptions, FlashSizeValues, IEspLoaderTerminal } from 'esptool-js';
+import type { FlashProgress } from '../types';
 
-export type UsbStatus = "idle" | "connecting" | "connected" | "busy" | "error";
+export type UsbStatus = 'idle' | 'connecting' | 'connected' | 'busy' | 'error';
 
 export interface FlashFileInput {
   name: string;
@@ -19,10 +19,10 @@ export interface FlashSettings {
   flashSize: FlashSizeValues;
 }
 
-export const isWebSerialSupported = typeof navigator !== "undefined" && "serial" in navigator;
+export const isWebSerialSupported = typeof navigator !== 'undefined' && 'serial' in navigator;
 
 export function useUsbFlasher(terminal: IEspLoaderTerminal) {
-  const [status, setStatus] = useState<UsbStatus>("idle");
+  const [status, setStatus] = useState<UsbStatus>('idle');
   const [chipName, setChipName] = useState<string | null>(null);
   const [progress, setProgress] = useState<FlashProgress | null>(null);
 
@@ -33,31 +33,31 @@ export function useUsbFlasher(terminal: IEspLoaderTerminal) {
     transportRef.current = null;
     loaderRef.current = null;
     setChipName(null);
-    setStatus("idle");
+    setStatus('idle');
     setProgress(null);
   }, []);
 
   const connect = useCallback(
     async (baudrate: number) => {
-      setStatus("connecting");
+      setStatus('connecting');
       try {
         const port = await navigator.serial.requestPort();
         const transport = new Transport(port, true);
         const loader = new ESPLoader({ transport, baudrate, terminal });
         const detected = await loader.main();
         transport.setDeviceLostCallback(() => {
-          terminal.writeLine("Устройство отключено.");
+          terminal.writeLine('Устройство отключено.');
           resetConnectionState();
         });
         transportRef.current = transport;
         loaderRef.current = loader;
         setChipName(detected);
-        setStatus("connected");
+        setStatus('connected');
       } catch (err) {
-        if (!(err instanceof Error && err.name === "NotFoundError")) {
+        if (!(err instanceof Error && err.name === 'NotFoundError')) {
           terminal.writeLine(`Ошибка подключения: ${err instanceof Error ? err.message : String(err)}`);
         }
-        setStatus("idle");
+        setStatus('idle');
       }
     },
     [terminal, resetConnectionState],
@@ -77,7 +77,7 @@ export function useUsbFlasher(terminal: IEspLoaderTerminal) {
     async (files: FlashFileInput[], settings: FlashSettings) => {
       const loader = loaderRef.current;
       if (!loader || files.length === 0) return false;
-      setStatus("busy");
+      setStatus('busy');
       setProgress(null);
       try {
         const options: FlashOptions = {
@@ -91,20 +91,20 @@ export function useUsbFlasher(terminal: IEspLoaderTerminal) {
             setProgress({
               fileIndex,
               fileCount: files.length,
-              fileName: files[fileIndex]?.name ?? "",
+              fileName: files[fileIndex]?.name ?? '',
               written,
               total,
             });
           },
         };
         await loader.writeFlash(options);
-        await loader.after("hard_reset");
-        terminal.writeLine("Прошивка завершена, устройство перезагружено.");
-        setStatus("connected");
+        await loader.after('hard_reset');
+        terminal.writeLine('Прошивка завершена, устройство перезагружено.');
+        setStatus('connected');
         return true;
       } catch (err) {
         terminal.writeLine(`Ошибка прошивки: ${err instanceof Error ? err.message : String(err)}`);
-        setStatus("connected");
+        setStatus('connected');
         return false;
       }
     },
@@ -114,14 +114,14 @@ export function useUsbFlasher(terminal: IEspLoaderTerminal) {
   const eraseFlash = useCallback(async () => {
     const loader = loaderRef.current;
     if (!loader) return false;
-    setStatus("busy");
+    setStatus('busy');
     try {
       await loader.eraseFlash();
-      setStatus("connected");
+      setStatus('connected');
       return true;
     } catch (err) {
       terminal.writeLine(`Ошибка очистки памяти: ${err instanceof Error ? err.message : String(err)}`);
-      setStatus("connected");
+      setStatus('connected');
       return false;
     }
   }, [terminal]);
