@@ -1,7 +1,3 @@
-#root {
-  background: var(--page-bg);
-}
-
 .app-main {
   flex: 1;
   padding: 24px;
@@ -18,11 +14,7 @@
 }
 
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
   padding: 20px 22px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   text-align: left;
 }
 
@@ -31,13 +23,13 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
-  color: var(--accent);
+  color: var(--g-color-text-brand);
 }
 
 .section-head span {
   font-size: 13px;
   font-weight: 650;
-  color: var(--text-h);
+  color: var(--g-color-text-primary);
   letter-spacing: -0.1px;
 }
 
@@ -51,18 +43,9 @@
 .preset-row {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--g-color-line-generic);
   align-items: center;
   gap: 6px;
-}
-
-.preset-row .btn {
-  gap: 4px;
-}
-
-.preset-row .btn span {
-  font-size: 13px;
-  line-height: 1;
 }
 
 .field {
@@ -70,7 +53,7 @@
   flex-direction: column;
   gap: 5px;
   font-size: 11.5px;
-  color: var(--text);
+  color: var(--g-color-text-secondary);
 }
 
 .field > span {
@@ -84,117 +67,28 @@
   min-width: 180px;
 }
 
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 13.5px;
-  color: var(--text-h);
-  cursor: pointer;
-}
-
-.btn {
-  padding: 9px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  color: var(--text-h);
-  font-size: 13.5px;
-  font-weight: 500;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  white-space: nowrap;
-  transition: all 0.15s;
-}
-
-.btn:hover:not(:disabled) {
-  border-color: var(--accent-border);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 550;
-  padding: 10px 20px;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
-}
-
-.btn-ghost {
-  background: transparent;
-  font-size: 12.5px;
-  font-weight: 400;
-  padding: 6px 11px;
-  border-radius: 6px;
-}
-
-.btn-danger {
-  border-color: rgba(229, 72, 77, 0.4);
-  color: var(--danger);
-  background: transparent;
-}
-
-.btn-danger:hover:not(:disabled) {
-  background: rgba(229, 72, 77, 0.1);
-  border-color: var(--danger);
-}
-
-.status-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  padding: 7px 13px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  color: var(--text);
+.status-label {
+  margin-bottom: 4px;
 }
 
 .status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--text);
+  background: var(--g-color-text-secondary);
   display: inline-block;
   flex-shrink: 0;
 }
 
-.status-ok {
-  color: var(--success);
-  border-color: rgba(48, 164, 108, 0.4);
-  background: rgba(48, 164, 108, 0.08);
-}
-
-.status-ok .status-dot {
-  background: var(--success);
+.status-dot-active {
+  background: var(--g-color-text-positive);
   animation: pulse-dot 2s ease-in-out infinite;
-}
-
-.warning-box {
-  border: 1px solid var(--warn);
-  background: rgba(245, 165, 36, 0.12);
-  color: var(--text-h);
-  border-radius: 8px;
-  padding: 16px;
-  text-align: left;
 }
 
 .hint {
   margin: 10px 0 0;
   font-size: 12px;
-  color: var(--text);
+  color: var(--g-color-text-secondary);
   opacity: 0.85;
   line-height: 1.5;
 }
@@ -207,6 +101,32 @@
 
 .action-progress {
   margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: var(--g-color-text-secondary);
+  font-family: var(--mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress-percent {
+  font-size: 12px;
+  color: var(--g-color-text-brand);
+  font-weight: 600;
+  font-family: var(--mono);
+  flex-shrink: 0;
 }
 
 .dropzone {
@@ -214,75 +134,44 @@
   align-items: center;
   gap: 12px;
   padding: 16px;
-  border: 2px dashed var(--border);
+  border: 2px dashed var(--g-color-line-generic);
   border-radius: 8px;
   cursor: pointer;
-  background: var(--page-bg);
+  background: var(--g-color-base-generic);
   width: 100%;
   transition: border-color 0.15s;
 }
 
 .dropzone:hover {
-  border-color: var(--accent-border);
+  border-color: var(--g-color-line-brand);
 }
 
 .dropzone-icon {
   flex-shrink: 0;
-  color: var(--text);
+  color: var(--g-color-text-secondary);
 }
 
 .dropzone-title {
   font-size: 13.5px;
-  color: var(--text-h);
+  color: var(--g-color-text-primary);
   font-weight: 500;
 }
 
 .dropzone-subtitle {
   font-size: 12px;
-  color: var(--text);
+  color: var(--g-color-text-secondary);
   margin-top: 2px;
 }
 
+/* Divider before a Disclosure that follows other content in the same card. */
 .advanced {
   margin-top: 14px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--g-color-line-generic);
   padding-top: 14px;
 }
 
-/* Standalone <details className="card advanced">: no preceding content to
-   divide from, so drop the divider and keep the collapsed summary centered. */
-.card.advanced {
-  margin-top: 0;
-  border-top: none;
-  padding-top: 20px;
-}
-
-.advanced summary {
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--text);
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  user-select: none;
-}
-
-.advanced summary::-webkit-details-marker {
-  display: none;
-}
-
-.advanced summary .chevron {
-  transition: transform 0.2s;
-  flex-shrink: 0;
-}
-
-.advanced[open] summary .chevron {
-  transform: rotate(180deg);
-}
-
-.advanced[open] summary {
-  margin-bottom: 14px;
+.advanced .g-disclosure__content {
+  margin-top: 14px;
 }
 
 .advanced .row + .row {
@@ -295,21 +184,19 @@
 }
 
 .snippet pre {
-  background: var(--code-bg);
-  border: 1px solid var(--border);
+  background: #18181f;
+  border: 1px solid var(--g-color-line-generic);
   border-radius: 8px;
   padding: 14px;
   overflow-x: auto;
   font-size: 12px;
   line-height: 1.5;
   text-align: left;
-  color: var(--code-text);
+  color: #d4d6e0;
 }
 
 .snippet-copy {
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 12px;
-  padding: 5px 10px;
 }
