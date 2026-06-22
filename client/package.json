@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gravity-ui/icons": "^2.18.0",
+    "@gravity-ui/uikit": "^7.42.0",
     "esptool-js": "^0.6.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
