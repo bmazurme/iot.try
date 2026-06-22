@@ -1,6 +1,7 @@
 import type { ChangeEvent } from 'react';
+import { Xmark } from '@gravity-ui/icons';
+import { Button, Icon, Progress, TextInput } from '@gravity-ui/uikit';
 import type { FirmwareSlot } from '../types';
-import { ProgressBar } from './ProgressBar';
 import './FirmwareFileRow.css';
 
 interface FirmwareFileRowProps {
@@ -19,13 +20,12 @@ export function FirmwareFileRow({ slot, disabled, progressPercent, onChange, onR
   return (
     <div className="firmware-row">
       <div className="firmware-row-main">
-        <input
+        <TextInput
           className="firmware-row-address"
-          type="text"
           value={slot.address}
           placeholder="0x10000"
           disabled={disabled}
-          onChange={(e) => onChange({ ...slot, address: e.target.value })}
+          onUpdate={(address) => onChange({ ...slot, address })}
         />
         <label className="firmware-row-file">
           <input type="file" accept=".bin" disabled={disabled} onChange={handleFile} />
@@ -43,15 +43,13 @@ export function FirmwareFileRow({ slot, disabled, progressPercent, onChange, onR
             {slot.file ? `${slot.file.name} (${(slot.file.size / 1024).toFixed(1)} КБ)` : 'Выбрать .bin файл…'}
           </span>
         </label>
-        <button type="button" className="firmware-row-remove" disabled={disabled} onClick={onRemove} aria-label="Удалить файл">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M2 2l8 8M10 2L2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
+        <Button view="outlined" size="m" disabled={disabled} onClick={onRemove} aria-label="Удалить файл">
+          <Icon data={Xmark} size={14} />
+        </Button>
       </div>
       {progressPercent !== undefined && (
         <div className="firmware-row-progress">
-          <ProgressBar percent={progressPercent} />
+          <Progress value={progressPercent} size="s" theme="default" />
         </div>
       )}
     </div>

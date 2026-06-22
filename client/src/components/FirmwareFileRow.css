@@ -10,12 +10,11 @@
   gap: 8px;
 }
 
-input[type="text"].firmware-row-address {
+.firmware-row-address {
   width: 104px;
   flex-shrink: 0;
   font-family: var(--mono);
   font-size: 12.5px;
-  background: var(--page-bg);
 }
 
 .firmware-row-file {
@@ -24,52 +23,32 @@ input[type="text"].firmware-row-address {
   align-items: center;
   gap: 10px;
   min-width: 200px;
-  border: 1.5px dashed var(--border);
+  border: 1.5px dashed var(--g-color-line-generic);
   border-radius: 7px;
   padding: 8px 12px;
   cursor: pointer;
-  background: var(--page-bg);
+  background: var(--g-color-base-generic);
   transition: border-color 0.15s;
 }
 
 .firmware-row-file:hover {
-  border-color: var(--accent-border);
+  border-color: var(--g-color-line-brand);
 }
 
 .firmware-row-file-icon {
   flex-shrink: 0;
-  color: var(--text);
+  color: var(--g-color-text-secondary);
 }
 
 .firmware-row-filename {
   flex: 1;
   min-width: 0;
   font-size: 13px;
-  color: var(--text);
+  color: var(--g-color-text-secondary);
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.firmware-row-remove {
-  width: 30px;
-  height: 30px;
-  border-radius: 7px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.15s;
-}
-
-.firmware-row-remove:hover {
-  color: var(--danger);
-  border-color: var(--danger);
 }
 
 .firmware-row-progress {
